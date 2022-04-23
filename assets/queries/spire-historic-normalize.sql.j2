@@ -1,0 +1,43 @@
+select
+         msg_id as msgid,
+        'spire' as source,
+        format("AIS.%d", msg_type) as type,
+        CAST(mmsi as STRING) as ssvid,
+        timestamp,
+        longitude as lon,
+        latitude as lat,
+        speed,
+        course,
+        CAST(heading as FLOAT64) as heading,
+        name as shipname,
+        call_sign as callsign,
+        CAST(imo AS STRING) AS imo,
+        shiptype,
+        collection_type AS receiver_type,
+        CAST(length AS FLOAT64) AS length,
+        CAST(width AS FLOAT64) AS width,
+        status
+ FROM (
+    SELECT *
+    FROM
+        `{{ source }}`
+    WHERE
+        timestamp >= TIMESTAMP("{{ start_dt }}") and timestamp < TIMESTAMP("{{ end_dt }}")
+)
+LEFT JOIN (
+  SELECT
+    id AS ship_and_cargo_type,
+    label AS shiptype
+  FROM
+    UNNEST ([
+
+    {% for shiptype in shiptypes %}
+      STRUCT({{ shiptype['id'] }} AS id, '{{ shiptype['label'] }}' AS label){{ "," if not loop.last }}
+    {% endfor %}
+
+    ])
+) USING(ship_and_cargo_type)
+{% if reduce_factor %}
+WHERE MOD(FARM_FINGERPRINT(CAST(mmsi as STRING)), CAST(1 / {{ reduce_factor }} as INT64)) = 0
+{% endif %}
+

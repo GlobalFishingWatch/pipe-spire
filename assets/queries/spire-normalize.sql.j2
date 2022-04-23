@@ -1,0 +1,114 @@
+WITH
+
+###
+### Get all the normalized fields from the raw SPIRE data, except their ids, since
+### we will use our own. Theirs have lots of dups.
+###
+source_spire AS (
+    SELECT
+        *
+    FROM
+        `{{ source }}`
+    WHERE
+        DATE(timestamp) = "{{ dt }}"
+        AND mmsi is not NULL
+    {% if reduce_factor %}
+       AND MOD(FARM_FINGERPRINT(CAST(mmsi as STRING)), CAST(1 / {{ reduce_factor }} as INT64)) = 0
+    {% endif %}
+),
+
+###
+### Generate a message id for every message of the SPIRE data.
+### Check https://github.com/GlobalFishingWatch/GFW-Tasks/issues/904
+###
+raw_positions_normalized_with_msgid as(
+      SELECT
+      TO_HEX(
+        MD5 (
+          format("%s|%s|%d|%d|%t|%f|%f|%d|%s|%s|%t",
+           'spire',
+           collection_type,
+           msg_type,
+           mmsi,
+           timestamp,
+           IFNULL(latitude,0.0),
+           IFNULL(longitude,0.0),
+           IFNULL(IMO,0),
+           IFNULL(name,""),
+           IFNULL(call_sign,""),
+           IFNULL(created_at, NULL))
+         )
+      ) as hex_msg_id,
+      *
+     FROM
+        source_spire
+   ),
+
+
+###
+### Add a normalized shiptype
+###
+raw_positions_normalized_with_msgid_and_shiptype AS (
+  SELECT
+   *
+  FROM
+   raw_positions_normalized_with_msgid
+  LEFT JOIN (
+    SELECT
+      id AS ship_and_cargo_type,
+      label AS shiptype
+    FROM
+      UNNEST ([
+
+      {% for shiptype in shiptypes %}
+        STRUCT({{ shiptype['id'] }} AS id, '{{ shiptype['label'] }}' AS label){{ "," if not loop.last }}
+      {% endfor %}
+
+      ])
+  ) USING(ship_and_cargo_type)
+),
+
+###
+### Filter out fields and remove duplicates
+###
+normalized_positions AS (
+SELECT DISTINCT
+   CONCAT (
+     SUBSTR(hex_msg_id,0,8),
+     '-',
+     SUBSTR(hex_msg_id,9,4),
+     '-',
+     SUBSTR(hex_msg_id,13,4),
+     '-',
+     SUBSTR(hex_msg_id,17,4),
+     '-',
+     SUBSTR(hex_msg_id,21,12)
+   ) as msgid,
+  'spire' as source,
+  format("AIS.%d", msg_type) as type,
+  CAST(mmsi as STRING) as ssvid,
+  timestamp,
+  longitude as lon,
+  latitude as lat,
+  speed,
+  course,
+  heading,
+  name as shipname,
+  call_sign as callsign,
+  destination as destination,
+  CAST(imo AS STRING) AS imo,
+  shiptype,
+  collection_type AS receiver_type,
+  source AS receiver,
+  length,
+  width,
+  status
+FROM
+  raw_positions_normalized_with_msgid_and_shiptype
+)
+
+SELECT
+  *
+FROM
+  normalized_positions
+

@@ -1,0 +1,256 @@
+[
+   {
+      "name":"nmea",
+      "type":"STRING",
+      "mode":"required",
+      "description": "The National Marine Electronics Association."
+   },
+   {
+      "name":"type",
+      "type":"INTEGER",
+      "mode":"nullable",
+      "description": "The type of the nmea."
+   },
+   {
+      "name":"msg_type",
+      "type":"INTEGER",
+      "mode":"nullable",
+      "description": "The message type."
+   },
+   {
+      "name":"msg_description",
+      "type":"STRING",
+      "mode":"nullable",
+      "description": "The message description."
+   },
+   {
+      "name":"timestamp",
+      "type":"TIMESTAMP",
+      "mode":"required",
+      "description": "The timestamp when arrives the message."
+   },
+   {
+      "name":"mmsi",
+      "type":"INTEGER",
+      "mode":"nullable",
+      "description": "The Maritime Mobile Service Identity to uniquely identify ship stations and group calls."
+   },
+   {
+      "name":"collection_type",
+      "type":"STRING",
+      "mode":"nullable",
+      "description": "The collection type."
+   },
+   {
+      "name":"source",
+      "type":"STRING",
+      "mode":"nullable",
+      "description": "The source."
+   },
+   {
+      "name":"supplier",
+      "type":"STRING",
+      "mode":"nullable",
+      "description": "The supplier."
+   },
+   {
+      "name":"msg_id",
+      "type":"STRING",
+      "mode":"nullable",
+      "description": "The identification of the message."
+   },
+   {
+      "name":"flag",
+      "type":"STRING",
+      "mode":"nullable",
+      "description": "The flag of the vessel."
+   },
+   {
+      "name":"flag_short_code",
+      "type":"STRING",
+      "mode":"nullable",
+      "description": "The flag of the vessel in short code."
+   },
+   {
+      "name":"longitude",
+      "type":"FLOAT",
+      "mode":"nullable",
+      "description": "The longitude where the vessel is placed."
+   },
+   {
+      "name":"latitude",
+      "type":"FLOAT",
+      "mode":"nullable",
+      "description": "The latitud where the vessel is placed."
+   },
+   {
+      "name":"speed",
+      "type":"FLOAT",
+      "mode":"nullable",
+      "description": "The speed of the vessel."
+   },
+   {
+      "name":"course",
+      "type":"FLOAT",
+      "mode":"nullable",
+      "description": "The course of the vessel."
+   },
+   {
+      "name":"heading",
+      "type":"FLOAT",
+      "mode":"nullable",
+      "description": "The heading of the vessel."
+   },
+   {
+      "name":"status",
+      "type":"INTEGER",
+      "mode":"nullable",
+      "description": "The status of the vessel."
+   },
+   {
+      "name":"maneuver",
+      "type":"FLOAT",
+      "mode":"nullable",
+      "description": "The maneuver of the vessel."
+   },
+   {
+      "name":"ais_version",
+      "type":"INTEGER",
+      "mode":"nullable",
+      "description": "The AIS version."
+   },
+   {
+      "name":"name",
+      "type":"STRING",
+      "mode":"nullable",
+      "description": "The name of the vessel."
+   },
+   {
+      "name":"length",
+      "type":"FLOAT",
+      "mode":"nullable",
+      "description": "The length of the vessel."
+   },
+   {
+      "name":"width",
+      "type":"FLOAT",
+      "mode":"nullable",
+      "description": "The width of the vessel."
+   },
+   {
+      "name":"ship_and_cargo_type",
+      "type":"INTEGER",
+      "mode":"nullable",
+      "description": "The type of the ship and cargo."
+   },
+   {
+      "name":"ship_type",
+      "type":"STRING",
+      "mode":"nullable",
+      "description": "The ship type."
+   },
+   {
+      "name":"call_sign",
+      "type":"STRING",
+      "mode":"nullable",
+      "description": "The call sign."
+   },
+   {
+      "name":"imo",
+      "type":"INTEGER",
+      "mode":"nullable",
+      "description": "The IMO International Maritime Organization Identification."
+   },
+   {
+      "name":"destination",
+      "type":"STRING",
+      "mode":"nullable",
+      "description": "The destination of the vessel."
+   },
+   {
+      "name":"eta",
+      "type":"STRING",
+      "mode":"nullable",
+      "description": "The Estimated time Arrival of the vessel."
+   },
+   {
+      "name":"draught",
+      "type":"FLOAT",
+      "mode":"nullable",
+      "description": "The altitud of the vessel that is under the water."
+   },
+   {
+      "name":"rot",
+      "type":"FLOAT",
+      "mode":"nullable",
+      "description": "The rot state of the vessel."
+   },
+   {
+      "name":"accuracy",
+      "type":"INTEGER",
+      "mode":"nullable",
+      "description": "The accuracy of the message."
+   },
+   {
+      "name":"position",
+      "type":"RECORD",
+      "mode":"nullable",
+      "fields":[
+         {
+            "name":"type",
+            "type":"STRING",
+            "description": "The type position of the vessel."
+         },
+         {
+            "name":"coordinates",
+            "type":"FLOAT",
+            "mode":"repeated",
+            "description": "The position coordinates of the vessel."
+         }
+      ]
+   },
+   {
+      "name":"created_at",
+      "type":"TIMESTAMP",
+      "mode":"nullable",
+      "description": "When the message was created."
+   },
+   {
+      "name":"id",
+      "type":"STRING",
+      "mode":"nullable",
+      "description": "The identification of the message."
+   },
+   {
+      "name":"dimensions",
+      "type":"RECORD",
+      "mode":"nullable",
+      "description": "Object contains the ship dimensions information from an AIS static voyage message",
+      "fields":[
+         {
+            "name":"A",
+            "type":"FLOAT",
+            "mode":"nullable",
+            "description":"Dimension A is the distance in meters from the ships GPS to the bow."
+         },
+         {
+            "name":"B",
+            "type":"FLOAT",
+            "mode":"nullable",
+            "description":"Dimension B is the distance in meters from the ships GPS to the stern."
+         },
+         {
+            "name":"C",
+            "type":"FLOAT",
+            "mode":"nullable",
+            "description":"Dimension C is the distance in meters from the ships GPS to the port side."
+         },
+         {
+            "name":"D",
+            "type":"FLOAT",
+            "mode":"nullable",
+            "description":"Dimension D is the distance in meters from the ships GPS to the starboard side."
+         }
+      ]
+   }
+]
