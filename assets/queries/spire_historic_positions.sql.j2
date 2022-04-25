@@ -1,0 +1,32 @@
+SELECT
+   CONCAT (
+        SUBSTR(hex_msg_id,0,8),
+        '-',
+        SUBSTR(hex_msg_id,9,4),
+        '-',
+        SUBSTR(hex_msg_id,13,4),
+        '-',
+        SUBSTR(hex_msg_id,17,4),
+        '-',
+        SUBSTR(hex_msg_id,21,12) ) AS msg_id,
+    * except(hex_msg_id)
+FROM (
+
+    SELECT
+      TO_HEX( MD5 (
+        format("%s|%s|%d|%d|%t|%f|%f|%d|%s|%s",
+            IFNULL(source, ''),
+            collection_type,
+            msg_type,
+            mmsi,
+            timestamp,
+            IFNULL(latitude,0.0),
+            IFNULL(longitude,0.0),
+            0,
+            '',
+            ''
+      ))) as hex_msg_id,
+      *
+    FROM `{{ source }}`
+)
+
